@@ -1,0 +1,20 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: nfs
+
+resources:
+  - ingress.yml
+  - namespace.yml
+
+bases:
+- ../../base # relative path to the base folder
+    
+images:
+- name: nginx
+  newTag: latest
+
+configMapGenerator:
+- name: configmap-files
+  files:
+  - files/init.sh

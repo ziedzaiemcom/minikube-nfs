@@ -1,0 +1,26 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: nfs-cronjob
+spec:
+  schedule: "* * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          volumes:
+          - name: nfs
+            persistentVolumeClaim:
+              claimName: nfs
+          containers:
+          - name: nfs-cronjob
+            image: busybox:1.28
+            imagePullPolicy: IfNotPresent
+            command:
+            - /bin/sh
+            - -c
+            - 'echo "$HOSTNAME : $(hostname -i)" > /mnt/index.html'
+            volumeMounts:
+              - name: nfs
+                mountPath: "/mnt"
+          restartPolicy: OnFailure
